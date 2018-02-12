@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script type="text/javascript" src="http://livejs.com/live.js"></script>
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+<canvas id="draw" width="800" height="800"></canvas>
+<script>
+//1. Canvas gives you a chunk of pixels to work with. You're not drawing on the HTML, but you're drawing on the context get the canvas element into the canvas context
+//2. ctx stands for context and we're asking the canvas for the 2d context with ctx = canvas.getContext('2d');
+//3. setting the canvas to occupy the window's entire width and height overriding the original defined attributes It will show that in the console if you check after setting it
+//4. when you draw on something you need a color. That's the ctx.context.strokeStyle='#BADASS';
+//5. lineJoin and Line cap make the lines drawn round instead of square There are a lot of different options on mdn
+//6. let isDrawing is creating a flag that will turn to true when you click and when it's true it will begin drawing at your mouse's cursor and when you release the mouse it will turn false and stop drawing
+//7.
+
+const canvas = document.querySelector('#draw');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+ctx.strokeStyle='#BADASS';
+ctx.lineJoin = 'round';
+ctx.lineCap = 'round';
+//linecap and linejoin control the line spread
+ctx.linewidth = 100;
+
+// ctx.globalCompositeOperation='subtract';
+//there are a variety of different blend modes check mdn for more. They make the colors look different
+
+
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+let hue = 0;
+let direction = true;
+
+function draw(e){
+  if(!isDrawing) return //stops function from running when not clickingmousedown
+  console.log(e);
+// linewidth = hue;
+//This would make it so that the line width gets very big to 300 then goes back down with the hue variable
+ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+    ctx.beginPath();
+  //ctx is always where you do drawing
+    ctx.moveTo(lastX, lastY);
+    //starts drawing from lastX and lastY which is set to 0 at beggining if theres no mouse listening event
+    ctx.lineTo(e.offsetX, e.offsetY);
+    //This Draws to where the mouse current is with the event data 'e'
+    [lastX, lastY] = [e.offsetX, e.offsetY]
+    
+  /* This is called destructering an array, new in ES6 
+      This is the same as
+        lastX = e.offsetX;
+        lastY = e.offsetY;*/
+        ctx.stroke();
+
+
+      hue++;
+      if(hue >= 360){
+        hue = 0;
+      }
+      //this increments the hue variable +1 everytime the function is called and when hue becomes greater than 360 
+      //it will reset back down to 0 and go back up basically making it loop.
+    if (ctx.lineWidth >= 25 || ctx.lineWidth <= 1)
+        {direction = !direction;}
+      //This if statement checks if the linewidth is greaterthan or equal to 100 or less than or equal to 1.
+      //In Either of those cases it will set direction to be false
+    if(direction)
+        {ctx.lineWidth++; } 
+    else
+        {ctx.lineWidth--;}
+      //This part of the If statement checks to see if direction is true or not which correlates to the previous statement
+      //If it's true linewidth gets incremented if it's false it gets decremented and the feeds into the above cycle
+      //which will repeat.
+      
+      
+
+}
+
+canvas.addEventListener('mousemove', draw);
+
+canvas.addEventListener('mousedown', (e) => {
+  isDrawing = true;
+ [lastX, lastY] = [e.offsetX, e.offsetY];
+ //this updates the lastX and lastY to be the new place where the line starts
+ //without this it will draw one continuous line 
+  });
+canvas.addEventListener('mouseup', () => isDrawing = false);
+canvas.addEventListener('mouseout', () => isDrawing = false);
+//inline arrow functions for setting isDrawing = true when mousedown occurs false when released and false when the user mouses out of the canvas
+
+</script>
+
+<style>
+  html, body {
+    margin:0;
+  }
+  *{overflow:hidden;}
+</style>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scoped CSS Variables and JS</title>
+</head>
+<body>
+  <h2>Update CSS Variables with <span class='hl'>JS</span></h2>
+
+<!--Data attributes can be literally anything. In this case it's just an attribute for sizing, but it has to be given the data- prefix in order to be legal in html
+
+ console.log(this.dataset) this can be used in javascript to output whatever the objects attached data-set attribute is set to. Basically an object is created for everything that has a data- attribute  -->
+  <div class="controls">
+    <label for="spacing">Spacing:</label>
+    <input id="spacing" type="range" name="spacing" min="10" max="200" value="10" data-sizing="px" data-name="kevin">
+
+    <label for="blur">Blur:</label>
+    <input id="blur" type="range" name="blur" min="0" max="25" value="10" data-sizing="px" data-name="kevin">
+
+    <label for="base">Base Color</label>
+    <input id="base" type="color" name="base" value="#ffc600">
+  </div>
+
+  <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
+
+  <style>
+      
+      /* Variable Declaration and attaches it to the highest element*/
+      :root {
+          --base: #ffc600;
+          --spacing: 10px;
+          --blur: 10px;
+      }
+      /*attaches the variables to the root element. which is the highest it can be declared at. Similar to declaring on HTML
+      variables are declared   */
+      
+      img {
+          padding: var(--spacing);
+          background: var(--base);
+          filter: blur(var(--blur));
+      }
+      /*You write the declaration to set the padding to the variable value 
+                          var(--'name'); */
+      
+      .hl {
+          color: var(--base);
+      }
+      
+    
+    /*  misc styles, nothing to do with CSS variables   */
+ 
+    body {
+      text-align: center;
+      background: #193549;
+      color: white;
+      font-family: 'helvetica neue', sans-serif;
+      font-weight: 100;
+      font-size: 50px;
+    }
+
+    .controls {
+      margin-bottom: 50px;
+    }
+
+    input {
+      width:100px;
+    }
+  </style>
+
+  <script>
+      /*query selector doesn't return an array. It returns a node list
+      The difference between an array and a node list is that there are a lot more methods available for use on an array than there are for a nodelist. You can use the browser tools to see that by just making an array and of a few values then pressing the down arrow underneath it in the chrome tools console.   
+      
+      In this instance the I'm using the foreach method to loop through these nodes that was recently added  */
+    
+      const inputs = document.querySelectorAll('.controls input');
+
+      function handleUpdate() {
+          const suffix = this.dataset.sizing || '';
+          document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix);
+      }
+      // the document.documentElement.style.setProperty(`--${this.name}`, this.value) sets the property value to what the elements name is and sets it equal to what the value is set to through the input element's actual value and then concantenates the value of suffix which is either pixels or nothing which allows it to be updated continously
+      
+      //the empty '' after the sizing is to allow for the base color to have no suffix. if you don't include that when you mouse over it, it will return undefined.
+      
+         
+      inputs.forEach(input => input.addEventListener('change', handleUpdate))
+
+//This runs a foreach loop ever the inputs and adds an event listener that looks for the change event, ie: when the input CHANGEs the callback function handleUpdate function is called
+       inputs.forEach(input => input.addEventListener('mousemove', handleUpdate))
+      //This will call the handleUpdate function when ever the mouse moves the input you could set specifically to trigger when you click it, set a variable to true when you click off set it to false.
+      
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS + CSS Clock</title>
+</head>
+<body>
+
+
+    <div class="clock">
+      <div class="clock-face">
+        <div class="hand hour-hand"></div>
+        <div class="hand min-hand"></div>
+        <div class="hand second-hand"></div>
+      </div>
+    </div>
+
+
+  <style>
+        html {
+          background:#018DED url(http://unsplash.it/1500/1000?image=881&blur=50);
+          background-size:cover;
+          font-family:'helvetica neue';
+          text-align: center;
+          font-size: 10px;
+        }
+
+        body {
+          margin: 0;
+          font-size: 2rem;
+          display:flex;
+          flex:1;
+          min-height: 100vh;
+          align-items: center;
+        }
+
+        .clock {
+          width: 30rem;
+          height: 30rem;
+          border:20px solid white;
+          border-radius:50%;
+          margin:50px auto;
+          position: relative;
+          padding:2rem;
+          box-shadow:
+            0 0 0 4px rgba(0,0,0,0.1),
+            inset 0 0 0 3px #EFEFEF,
+            inset 0 0 10px black,
+            0 0 10px rgba(0,0,0,0.2);
+        }
+
+        .clock-face {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          transform: translateY(-3px); /* account for the height of the clock hands */
+        }
+
+        .hand {
+        width:50%;
+        height:6px;
+        background:black;
+        position: absolute;
+        top:50%;
+        transform-origin: 100%; /*This changes where the hands pivot at. ie: pivot around the center */
+        transform: rotate(90deg); /*This makes the rotation start at 12:00 time instead of the default 9:00*/
+        transition: all 0.05s;    /*This sets a transition to any change that the clock makes allowing for a tic effect*/
+        transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1); /*Allows for a tick effect of snaping forward then back in place like a watch*/
+        }
+
+  </style>
+
+            
+
+  <script>
+      
+      const secondHand = document.querySelector('.second-hand');
+      const minuteHand = document.querySelector('.min-hand');
+      const hourHand = document.querySelector('.hour-hand');
+      
+            function setDate() {                                        
+                const now = new Date();
+                
+                const seconds = now.getSeconds();
+                const minutes = now.getMinutes();
+                const hours = now.getHours();
+                
+                const secondsDegrees = ((seconds / 60) * 360) + 90;
+                const minutesDegrees = ((minutes / 60) * 360) + ((seconds/60)*6) + 90;
+                const hoursDegrees = ((hours / 12) * 360) + ((minutes/60)*30) + 90;
+
+                console.log(seconds);
+                console.log(minutes);
+                console.log(hours);
+                
+                secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+                minuteHand.style.transform = `rotate(${minutesDegrees}deg)`;
+                hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+                
+
+            }
+//set date function gets a new date and sets it equal to now
+//seconds is set equal to now.getSeconds(); which is just the holder for the date new date function the seconds are constantly updated every second
+//since seconds equals the current seconds when it's divided by 60 and multipled by 360 it gets the degrees that corresponds to the correct spot it should be located on a clock
+//the + 90 at the end is to offset the fact that it starts at left to right but it needs to start from going top to bottom to make it appear like a clock.
+//secondHand.style.transform lets you change the style of the secondhand by adding a css transform attribute that rotates the secondHand.
+      
+      
+      
+      setInterval(setDate, 500); //This sets the interval at which the function is called. The 1,000 is 1,000 milliseconds
+      
+  </script>
+</body>
+</html>

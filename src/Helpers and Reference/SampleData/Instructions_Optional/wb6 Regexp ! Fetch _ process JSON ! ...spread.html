@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Type Ahead 👀</title>
+  <script type="text/javascript" src="http://livejs.com/live.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form class="search-form">
+    <input type="text" class="search" placeholder="City or State">
+    <ul class="suggestions">
+      <li>Filter for a city</li>
+      <li>or a state</li>
+    </ul>
+  </form>
+
+
+<script>
+const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+const cities = [];
+
+
+fetch(endpoint)
+.then(blob => blob.json())
+//Calling the blob.json method gives you the raw data that is used in the next section
+.then(data => cities.push(...data));
+//... spreads the data into the cities array ((ES6...))
+
+function findMatches(wordToMatch, cities) {
+  return cities.filter(place => {
+      //here we find matches to the searched string
+      const regex = new RegExp(wordToMatch, 'gi');
+      //g means global looking through the entire string for specific character
+      //i means insensitive or not case-sensitive
+      return place.city.match(regex) || place.state.match(regex)
+  });
+}
+
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}//taken from stackoverflow
+
+  function displayMatches(){
+    //this.value refers to the value that's within the input textbox. 
+    //it is then passed to the findmatches function which as the wordToMatch parameter and uses the Regexp to compare it to cities.
+  const matchArray = findMatches(this.value, cities);
+  const html = matchArray.map(place => {
+
+    const regex = new RegExp(this.value, 'gi');
+    const cityName = place.city.replace(regex, `<span class="hl">${this.value}</span>`);
+    //Here the cityName takes the value that the user input and highlights it with the hl span which is then 
+    //instead of putting place.city in the span below I put cityName in the template literal
+    const stateName = place.state.replace(regex, `<span class="hl">${this.value}</span>`);
+    return `
+    <li>
+    <span class="name">${cityName}, ${stateName} </span>
+    <span class="population">${numberWithCommas(place.population)}</span>
+    </li>
+    `
+  }).join('');
+  //the .join makes it so that instead of .map returning a large array it returns one big string.
+suggestions.innerHTML = html;
+}
+
+const searchInput = document.querySelector('.search');
+const suggestions = document.querySelector('.suggestions');
+//These selectors work like jquery essentionally. 
+//the .addEventListner works by getting the reference that it was named ie 'searchInput'
+//Then it takes what the event it's looking for in quotes Followed by what to do when it hears the event
+//which is a function
+searchInput.addEventListener('change', displayMatches); 
+searchInput.addEventListener('keyup', displayMatches); 
+
+
+//If you don't want to use the constant variable you could define another variable, city in this case
+//let city = [];  .then(data => city = data);
+//and then set the city be equal to the value of data
+</script>
+  </body>
+</html>

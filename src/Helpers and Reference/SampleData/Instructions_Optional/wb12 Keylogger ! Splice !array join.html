@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Key Detection</title>
+  <script type="text/javascript" src="http://www.cornify.com/js/cornify.js"></script>
+</head>
+
+<body>
+
+  <script>
+    //                  ****Declarations****
+
+    const pressed = [];  //array to take in pressed keys
+    const secretCode = 'kevin';
+
+    //                  ****Functions****
+
+
+    //                  ****EVENT LISTENER****
+    
+    window.addEventListener('keyup', (e) => {
+      //This is a keylogger
+      console.log(e.key); //This displays the key that a person presses
+      pressed.push(e.key);
+      pressed.splice(-secretCode.length - 1, pressed.length - secretCode.length)
+      //This will prevent the array that takes in characters from being bigger than the amount of charactersneeded to receive the secretcode
+      if (pressed.join('').includes(secretCode)) {
+        cornify_add();
+      }
+      console.log(pressed); //This displays the pressed array 
+    })
+  </script>
+</body>
+
+</html>
