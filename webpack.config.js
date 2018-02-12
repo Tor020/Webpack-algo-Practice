@@ -6,7 +6,7 @@ module.exports = {
   context: path.join(__dirname, 'src'),
   entry: [
     'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=2000',
-    './main.js',
+    './index.js',
   ],
   output: {
     path: path.join(__dirname, 'www'),
